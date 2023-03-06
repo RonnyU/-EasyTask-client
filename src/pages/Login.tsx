@@ -1,10 +1,11 @@
+import { Link } from 'react-router-dom';
+
 const Login = () => {
   return (
     <>
       <h1 className='text-sky-600 font-black text-6xl capitalize'>
         Login to manage your <span className='text-slate-700'>projects</span>
       </h1>
-
       <form className='my-10 bg-white shadow rounded-lg p-10'>
         <div className='my-5'>
           <label
@@ -42,6 +43,21 @@ const Login = () => {
           className='bg-sky-700 w-full mb-5 py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors'
         />
       </form>
+
+      <nav className='lg:flex lg:justify-between'>
+        <Link
+          className='block text-center my-5 text-slate-500 uppercase text-sm'
+          to='/sign-in'
+        >
+          Don't have an account? Sign In
+        </Link>
+        <Link
+          className='block text-center my-5 text-slate-500 uppercase text-sm'
+          to='/reset-password'
+        >
+          Forgot my password
+        </Link>
+      </nav>
     </>
   );
 };
