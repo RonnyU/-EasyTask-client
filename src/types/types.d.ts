@@ -8,10 +8,10 @@ export declare interface AppProps {
   props2: Props & React.ComponentPropsWithRef<MyButtonWithForwardRef>; // to impersonate all the props of MyButtonForwardedRef and explicitly forwarding its ref
 }
 
-export type AlertType = {
+export interface AlertType {
   msg: string;
   error: boolean;
-};
+}
 
 export type ServerError = {
   msg: string;

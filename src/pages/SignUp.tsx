@@ -4,11 +4,12 @@ import { AlertType, ServerError } from '../types/types';
 import Alert from '../components/Alert';
 import axios, { AxiosError } from 'axios';
 
-const SignIn = () => {
+const SignUp = () => {
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const repeatPasswordRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const [alert, setAlert] = useState<AlertType | undefined>(undefined);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -43,7 +44,7 @@ const SignIn = () => {
     setAlert(undefined);
 
     try {
-      const url = import.meta.env.VITE_API_URL + '/users';
+      const url = import.meta.env.VITE_API_URL + '/api/users';
 
       const { data } = await axios.post(url, { name, email, password });
 
@@ -51,6 +52,10 @@ const SignIn = () => {
         msg: data.msg,
         error: false,
       });
+
+      console.log('name: ', nameRef.current?.value);
+      formRef.current?.reset();
+      console.log('name: ', nameRef.current?.value);
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
@@ -71,6 +76,7 @@ const SignIn = () => {
       <form
         onSubmit={handleSubmit}
         className='my-10 bg-white shadow rounded-lg p-10'
+        ref={formRef}
       >
         <div className='my-5'>
           <label
@@ -138,7 +144,7 @@ const SignIn = () => {
 
         <input
           type='submit'
-          value='Sign In'
+          value='Sign Up'
           className='bg-sky-700 w-full mb-5 py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors'
         />
       </form>
@@ -161,4 +167,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
