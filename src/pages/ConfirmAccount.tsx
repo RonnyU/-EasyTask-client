@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
+import axiosClient from '../utils/axiosClient';
 import Alert from '../components/Alert';
 import { AlertType, ServerError } from '../types/types';
 
@@ -15,8 +16,8 @@ const ConfirmAccount = () => {
     let source = axios.CancelToken.source();
     const accConfirmed = async () => {
       try {
-        const url = `${import.meta.env.VITE_API_URL}/api/users/confirm/${id}`;
-        const { data } = await axios(url, { cancelToken: source.token });
+        const url = `/users/confirm/${id}`;
+        const { data } = await axiosClient(url, { cancelToken: source.token });
 
         setAlert({
           msg: data.msg,

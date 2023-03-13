@@ -1,3 +1,4 @@
+//* Interfaces
 export declare interface AppProps {
   children?: React.ReactNode; // best, accepts everything React can render
   childrenElement: JSX.Element; // A single React element
@@ -13,6 +14,9 @@ export interface AlertType {
   error: boolean;
 }
 
+//* Types
 export type ServerError = {
   msg: string;
 };
+
+export type CallbackVoidFunction = (...args: any[]) => void;

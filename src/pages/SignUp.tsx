@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { FormEvent, useRef, useState } from 'react';
 import { AlertType, ServerError } from '../types/types';
 import Alert from '../components/Alert';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
+import axiosClient from '../utils/axiosClient';
 
 const SignUp = () => {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -44,18 +45,18 @@ const SignUp = () => {
     setAlert(undefined);
 
     try {
-      const url = import.meta.env.VITE_API_URL + '/api/users';
-
-      const { data } = await axios.post(url, { name, email, password });
+      const { data } = await axiosClient.post('/users', {
+        name,
+        email,
+        password,
+      });
 
       setAlert({
         msg: data.msg,
         error: false,
       });
 
-      console.log('name: ', nameRef.current?.value);
       formRef.current?.reset();
-      console.log('name: ', nameRef.current?.value);
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
