@@ -1,6 +1,6 @@
-import { AlertType } from '../types/types';
+import { IAlert } from '../types/types';
 
-function Alert({ msg, error }: AlertType) {
+function Alert({ msg, error }: IAlert) {
   return (
     <div
       className={`${

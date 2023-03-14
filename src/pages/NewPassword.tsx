@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
 import axiosClient from '../utils/axiosClient';
-import { AlertType, ServerError } from '../types/types';
+import { IAlert, ServerError } from '../types/types';
 import axios, { AxiosError } from 'axios';
 
 const NewPassword = () => {
@@ -10,7 +10,7 @@ const NewPassword = () => {
   const { token } = params;
   const navigate = useNavigate();
 
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [passwordSaved, setPasswordSaved] = useState(false);
   const newPasswordRef = useRef<HTMLInputElement>(null);

@@ -2,13 +2,16 @@ import { AxiosError } from 'axios';
 import { useState, useRef, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
-import { AlertType, ServerError } from '../types/types';
+import useAuth from '../hooks/useAuth';
+import { IAlert, ServerError } from '../types/types';
 import axiosClient from '../utils/axiosClient';
 
 const Login = () => {
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+
+  const { setStateAuth } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,6 +35,7 @@ const Login = () => {
       });
 
       localStorage.setItem('token', data.token);
+      setStateAuth(data);
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 

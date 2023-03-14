@@ -2,12 +2,12 @@ import { AxiosError } from 'axios';
 import { FormEvent, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Alert from '../components/Alert';
-import { AlertType, ServerError } from '../types/types';
+import { IAlert, ServerError } from '../types/types';
 import axiosClient from '../utils/axiosClient';
 
 const ResetPassword = () => {
   const emailRef = useRef<HTMLInputElement>(null);
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

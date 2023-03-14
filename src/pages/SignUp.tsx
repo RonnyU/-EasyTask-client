@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FormEvent, useRef, useState } from 'react';
-import { AlertType, ServerError } from '../types/types';
+import { IAlert, ServerError } from '../types/types';
 import Alert from '../components/Alert';
 import { AxiosError } from 'axios';
 import axiosClient from '../utils/axiosClient';
@@ -11,7 +11,7 @@ const SignUp = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const repeatPasswordRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

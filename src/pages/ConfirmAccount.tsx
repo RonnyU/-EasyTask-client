@@ -3,13 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import axiosClient from '../utils/axiosClient';
 import Alert from '../components/Alert';
-import { AlertType, ServerError } from '../types/types';
+import { IAlert, ServerError } from '../types/types';
 
 const ConfirmAccount = () => {
   const params = useParams();
   const { id } = params;
 
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
   const [accountConfirmed, setAccountConfirmed] = useState(false);
 
   useEffect(() => {
