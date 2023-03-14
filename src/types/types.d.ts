@@ -23,6 +23,16 @@ export interface IUser {
   token?: string;
 }
 
+export interface IProject {
+  _id: string;
+  name: string;
+  description: string;
+  deadline: string;
+  client: string;
+  createdby: string;
+  partners: IUser[];
+}
+
 //* Types
 
 export type Props = {

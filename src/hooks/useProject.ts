@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import { AuthContext } from '../context';
+import { ProjectContext } from '../context';
 
-const useAuth = () => {
-  const context = useContext(AuthContext);
+const useProject = () => {
+  const context = useContext(ProjectContext);
   // If context is undefined, we know we used RadioGroupItem
   // outside of our provider so we can throw a more helpful
   // error!
@@ -12,7 +12,6 @@ const useAuth = () => {
         'otherwise it will not function correctly.'
     );
   }
-
   // Because of TypeScript's type narrowing, if we make it past
   // the error the compiler knows that context is always defined
   // at this point, so we don't need to do any conditional
@@ -20,4 +19,4 @@ const useAuth = () => {
   return context;
 };
 
-export default useAuth;
+export default useProject;

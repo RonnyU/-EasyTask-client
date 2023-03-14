@@ -1,4 +1,4 @@
-const Projects = () => {
+const NewProject = () => {
   return (
     <>
       <h1 className='font-black text-4xl'>Projects</h1>
@@ -8,4 +8,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default NewProject;
