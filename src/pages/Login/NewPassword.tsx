@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Alert from '../components/Alert';
-import axiosClient from '../utils/axiosClient';
-import { IAlert, ServerError } from '../types/types';
+import axiosClient from '../../utils/axiosClient';
+import { IAlert, ServerError } from '../../types/types';
 import axios, { AxiosError } from 'axios';
+import { Alert } from '../../components';
 
 const NewPassword = () => {
   const params = useParams();

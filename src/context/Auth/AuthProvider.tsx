@@ -44,6 +44,7 @@ const AuthProvider = ({ children }: Props) => {
     } catch (error) {
       setAuth(INITIAL_STATE);
       const errMsg = (error as AxiosError).response?.data as ServerError;
+      console.log(errMsg);
     } finally {
       setLoading(false);
     }

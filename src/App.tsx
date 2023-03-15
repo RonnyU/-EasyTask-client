@@ -1,14 +1,15 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AuthLayout from './layouts/AuthLayout';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import ResetPassword from './pages/ResetPassword';
-import NewPassword from './pages/NewPassword';
-import ConfirmAccount from './pages/ConfirmAccount';
 import { AuthProvider, ProjectProvider } from './context';
-import PrivateRoute from './layouts/PrivateRoute';
-import Projects from './pages/Projects';
-import NewProject from './pages/NewProject';
+import { AuthLayout, PrivateRoute } from './layouts';
+import {
+  ConfirmAccount,
+  Login,
+  NewPassword,
+  NewProject,
+  Projects,
+  ResetPassword,
+  SignUp,
+} from './pages';
 
 function App() {
   return (

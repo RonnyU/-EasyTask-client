@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
-import axiosClient from '../utils/axiosClient';
-import Alert from '../components/Alert';
-import { IAlert, ServerError } from '../types/types';
+import axiosClient from '../../utils/axiosClient';
+import { IAlert, ServerError } from '../../types/types';
+import { Alert } from '../../components';
 
 const ConfirmAccount = () => {
   const params = useParams();

@@ -1,9 +1,9 @@
 import { AxiosError } from 'axios';
 import { FormEvent, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Alert from '../components/Alert';
-import { IAlert, ServerError } from '../types/types';
-import axiosClient from '../utils/axiosClient';
+import { Alert } from '../../components';
+import { IAlert, ServerError } from '../../types/types';
+import axiosClient from '../../utils/axiosClient';
 
 const ResetPassword = () => {
   const emailRef = useRef<HTMLInputElement>(null);

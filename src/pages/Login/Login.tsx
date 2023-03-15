@@ -1,43 +1,27 @@
-import { Link } from 'react-router-dom';
-import { FormEvent, useRef, useState } from 'react';
-import { IAlert, ServerError } from '../types/types';
-import Alert from '../components/Alert';
 import { AxiosError } from 'axios';
-import axiosClient from '../utils/axiosClient';
+import { useState, useRef, FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axiosClient from '../../utils/axiosClient';
+import { Alert } from '../../components';
+import { useAuth } from '../../hooks';
+import { IAlert, ServerError } from '../../types/types';
 
-const SignUp = () => {
-  const nameRef = useRef<HTMLInputElement>(null);
+const Login = () => {
+  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const repeatPasswordRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
+
+  const { setStateAuth } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const name = nameRef.current?.value;
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
-    const repeatPassword = repeatPasswordRef.current?.value;
 
-    if ([name, email, password, repeatPassword].includes('')) {
+    if ([email, password].includes('')) {
       setAlert({
         msg: 'All fields are required',
-        error: true,
-      });
-    }
-
-    if (password !== repeatPassword) {
-      setAlert({
-        msg: 'The passwords does not match',
-        error: true,
-      });
-    }
-
-    if (password !== undefined && password.length < 6) {
-      setAlert({
-        msg: 'The password must have 6 characters at least',
         error: true,
       });
     }
@@ -45,18 +29,13 @@ const SignUp = () => {
     setAlert(undefined);
 
     try {
-      const { data } = await axiosClient.post('/users', {
-        name,
+      const { data } = await axiosClient.post('/users/login', {
         email,
         password,
       });
 
-      setAlert({
-        msg: data.msg,
-        error: false,
-      });
-
-      formRef.current?.reset();
+      localStorage.setItem('token', data.token);
+      setStateAuth(data);
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
@@ -66,35 +45,19 @@ const SignUp = () => {
       });
     }
   };
+
   return (
     <>
       <h1 className='text-sky-600 font-black text-6xl capitalize'>
-        Sign In and manage your <span className='text-slate-700'>projects</span>
+        Login to manage your <span className='text-slate-700'>projects</span>
       </h1>
 
       {alert?.msg && <Alert msg={alert.msg} error={alert.error} />}
 
       <form
-        onSubmit={handleSubmit}
         className='my-10 bg-white shadow rounded-lg p-10'
-        ref={formRef}
+        onSubmit={handleSubmit}
       >
-        <div className='my-5'>
-          <label
-            className='uppercase text-gray-600  block text-xl font-bold'
-            htmlFor='name'
-          >
-            Name
-          </label>
-          <input
-            type='text'
-            id='name'
-            ref={nameRef}
-            placeholder='Type your name'
-            className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
-          />
-        </div>
-
         <div className='my-5'>
           <label
             className='uppercase text-gray-600  block text-xl font-bold'
@@ -127,25 +90,9 @@ const SignUp = () => {
           />
         </div>
 
-        <div className='my-5'>
-          <label
-            className='uppercase text-gray-600  block text-xl font-bold'
-            htmlFor='repeat-password'
-          >
-            Repeat Password
-          </label>
-          <input
-            type='password'
-            id='repeat-password'
-            ref={repeatPasswordRef}
-            placeholder='Type your password again'
-            className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
-          />
-        </div>
-
         <input
           type='submit'
-          value='Sign Up'
+          value='Login'
           className='bg-sky-700 w-full mb-5 py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors'
         />
       </form>
@@ -153,9 +100,9 @@ const SignUp = () => {
       <nav className='lg:flex lg:justify-between'>
         <Link
           className='block text-center my-5 text-slate-500 uppercase text-sm'
-          to='/'
+          to='/sign-up'
         >
-          Already have an account? Login
+          Don't have an account? Sign Up
         </Link>
         <Link
           className='block text-center my-5 text-slate-500 uppercase text-sm'
@@ -168,4 +115,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Login;
