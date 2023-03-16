@@ -9,7 +9,7 @@ const NewPassword = () => {
   const params = useParams();
   const { token } = params;
   const navigate = useNavigate();
-
+  //todo add new form hook
   const [alert, setAlert] = useState<IAlert | undefined>(undefined);
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [passwordSaved, setPasswordSaved] = useState(false);
@@ -66,6 +66,7 @@ const NewPassword = () => {
         msg: data.msg,
         error: false,
       });
+      //Todo make a hook for timeout
       setTimeout(() => navigate('/'), 3000);
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;

@@ -7,6 +7,7 @@ import { useAuth } from '../../hooks';
 import { IAlert, ServerError } from '../../types/types';
 
 const Login = () => {
+  //todo add new form hook
   const [alert, setAlert] = useState<IAlert | undefined>(undefined);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);

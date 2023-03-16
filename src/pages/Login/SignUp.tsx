@@ -1,25 +1,34 @@
 import { Link } from 'react-router-dom';
-import { FormEvent, useRef, useState } from 'react';
-import { IAlert, ServerError } from '../../types/types';
+import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { AxiosError } from 'axios';
+import { IAlert, ServerError } from '../../types/types';
 import axiosClient from '../../utils/axiosClient';
 import { Alert } from '../../components';
+import { useForm } from '../../hooks';
+
+interface FormData {
+  name: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
+}
+
+const INITIAL_STATE = {
+  name: '',
+  email: '',
+  password: '',
+  repeatPassword: '',
+};
 
 const SignUp = () => {
-  const nameRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const repeatPasswordRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
+  const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
+
   const [alert, setAlert] = useState<IAlert | undefined>(undefined);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const name = nameRef.current?.value;
-    const email = emailRef.current?.value;
-    const password = passwordRef.current?.value;
-    const repeatPassword = repeatPasswordRef.current?.value;
+    const { name, email, password, repeatPassword } = form;
 
     if ([name, email, password, repeatPassword].includes('')) {
       setAlert({
@@ -56,7 +65,7 @@ const SignUp = () => {
         error: false,
       });
 
-      formRef.current?.reset();
+      clearForm();
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
@@ -77,7 +86,6 @@ const SignUp = () => {
       <form
         onSubmit={handleSubmit}
         className='my-10 bg-white shadow rounded-lg p-10'
-        ref={formRef}
       >
         <div className='my-5'>
           <label
@@ -88,10 +96,9 @@ const SignUp = () => {
           </label>
           <input
             type='text'
-            id='name'
-            ref={nameRef}
             placeholder='Type your name'
             className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
+            {...register('name')}
           />
         </div>
 
@@ -104,10 +111,9 @@ const SignUp = () => {
           </label>
           <input
             type='email'
-            id='email'
-            ref={emailRef}
             placeholder='Type your email'
             className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
+            {...register('email')}
           />
         </div>
 
@@ -120,26 +126,24 @@ const SignUp = () => {
           </label>
           <input
             type='password'
-            id='password'
-            ref={passwordRef}
             placeholder='Type your password'
             className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
+            {...register('password')}
           />
         </div>
 
         <div className='my-5'>
           <label
             className='uppercase text-gray-600  block text-xl font-bold'
-            htmlFor='repeat-password'
+            htmlFor='repeatPassword'
           >
             Repeat Password
           </label>
           <input
             type='password'
-            id='repeat-password'
-            ref={repeatPasswordRef}
             placeholder='Type your password again'
             className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
+            {...register('repeatPassword')}
           />
         </div>
 

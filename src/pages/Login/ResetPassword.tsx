@@ -6,6 +6,7 @@ import { IAlert, ServerError } from '../../types/types';
 import axiosClient from '../../utils/axiosClient';
 
 const ResetPassword = () => {
+  //Todo add new form hook
   const emailRef = useRef<HTMLInputElement>(null);
   const [alert, setAlert] = useState<IAlert | undefined>(undefined);
 

@@ -30,6 +30,7 @@ function App() {
               <Route index element={<Projects />} />
               <Route path='new-project' element={<NewProject />} />
             </Route>
+            <Route path='*' element={<p>Path not resolved</p>} />
           </Routes>
         </ProjectProvider>
       </AuthProvider>
