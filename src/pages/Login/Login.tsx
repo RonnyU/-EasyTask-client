@@ -1,24 +1,33 @@
 import { AxiosError } from 'axios';
-import { useState, useRef, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosClient from '../../utils/axiosClient';
 import { Alert } from '../../components';
-import { useAuth } from '../../hooks';
+import { useAuth, useForm } from '../../hooks';
 import { IAlert, ServerError } from '../../types/types';
 
+interface FormData {
+  email: string;
+  password: string;
+}
+
+const INITIAL_STATE: FormData = {
+  email: '',
+  password: '',
+};
+
 const Login = () => {
-  //todo add new form hook
+  const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
+
   const [alert, setAlert] = useState<IAlert | undefined>(undefined);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
 
   const { setStateAuth } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const email = emailRef.current?.value;
-    const password = passwordRef.current?.value;
+    const { email } = form;
+    const { password } = form;
 
     if ([email, password].includes('')) {
       setAlert({
@@ -37,6 +46,8 @@ const Login = () => {
 
       localStorage.setItem('token', data.token);
       setStateAuth(data);
+      clearForm();
+      //Todo use navigate
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
@@ -68,10 +79,9 @@ const Login = () => {
           </label>
           <input
             type='email'
-            id='email'
-            ref={emailRef}
             placeholder='Type your email'
             className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
+            {...register('email')}
           />
         </div>
 
@@ -84,10 +94,9 @@ const Login = () => {
           </label>
           <input
             type='password'
-            id='password'
-            ref={passwordRef}
             placeholder='Type your password'
             className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
+            {...register('password')}
           />
         </div>
 

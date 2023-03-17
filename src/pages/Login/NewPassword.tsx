@@ -1,19 +1,29 @@
-import { useState, useEffect, useRef, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosClient from '../../utils/axiosClient';
 import { IAlert, ServerError } from '../../types/types';
 import axios, { AxiosError } from 'axios';
 import { Alert } from '../../components';
+import { useForm } from '../../hooks';
+
+interface FormData {
+  password: string;
+}
+
+const INITIAL_STATE: FormData = {
+  password: '',
+};
 
 const NewPassword = () => {
   const params = useParams();
   const { token } = params;
   const navigate = useNavigate();
-  //todo add new form hook
+
+  const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
+
   const [alert, setAlert] = useState<IAlert | undefined>(undefined);
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [passwordSaved, setPasswordSaved] = useState(false);
-  const newPasswordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let source = axios.CancelToken.source();
@@ -43,10 +53,9 @@ const NewPassword = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (
-      newPasswordRef.current?.value &&
-      newPasswordRef.current?.value.length < 6
-    ) {
+    const { password } = form;
+
+    if (password.length < 6) {
       setAlert({
         msg: 'The password must have at least 6 characters',
         error: true,
@@ -58,7 +67,7 @@ const NewPassword = () => {
       const url = `/users/reset-password/${token}`;
 
       const { data } = await axiosClient.post(url, {
-        password: newPasswordRef.current?.value,
+        password,
       });
 
       setPasswordSaved(true);
@@ -67,6 +76,7 @@ const NewPassword = () => {
         error: false,
       });
       //Todo make a hook for timeout
+      clearForm();
       setTimeout(() => navigate('/'), 3000);
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
@@ -101,10 +111,9 @@ const NewPassword = () => {
             </label>
             <input
               type='password'
-              id='password'
-              ref={newPasswordRef}
               placeholder='Type your new password'
               className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
+              {...register('password')}
             />
           </div>
 

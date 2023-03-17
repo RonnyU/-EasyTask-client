@@ -13,7 +13,7 @@ interface FormData {
   repeatPassword: string;
 }
 
-const INITIAL_STATE = {
+const INITIAL_STATE: FormData = {
   name: '',
   email: '',
   password: '',

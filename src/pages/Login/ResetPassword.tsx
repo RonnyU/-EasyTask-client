@@ -2,18 +2,29 @@ import { AxiosError } from 'axios';
 import { FormEvent, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Alert } from '../../components';
+import { useForm } from '../../hooks';
 import { IAlert, ServerError } from '../../types/types';
 import axiosClient from '../../utils/axiosClient';
 
+interface FormData {
+  email: string;
+}
+
+const INITIAL_STATE: FormData = {
+  email: '',
+};
+
 const ResetPassword = () => {
-  //Todo add new form hook
-  const emailRef = useRef<HTMLInputElement>(null);
+  const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
+
   const [alert, setAlert] = useState<IAlert | undefined>(undefined);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!emailRef.current?.value || emailRef.current.value.length < 6) {
+    const { email } = form;
+
+    if (!email || email.length < 6) {
       setAlert({
         msg: 'Email is required',
         error: true,
@@ -23,10 +34,10 @@ const ResetPassword = () => {
 
     try {
       const { data } = await axiosClient.post('/users/reset-password', {
-        email: emailRef.current.value,
+        email,
       });
 
-      emailRef.current.value = '';
+      clearForm();
       setAlert({
         msg: data.msg,
         error: false,
@@ -61,10 +72,9 @@ const ResetPassword = () => {
           </label>
           <input
             type='email'
-            id='email'
-            ref={emailRef}
             placeholder='Type your email'
             className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
+            {...register('email')}
           />
         </div>
 
