@@ -81,7 +81,7 @@ const ResetPassword = () => {
         <input
           type='submit'
           value='Send'
-          className='bg-sky-700 w-full mb-5 py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors'
+          className='bg-sky-700 w-full mb-5 py-3 text-white uppercase font-bold rounded hover:bg-sky-800 transition-colors'
         />
       </form>
 

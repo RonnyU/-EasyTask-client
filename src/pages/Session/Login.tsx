@@ -1,52 +1,39 @@
-import { Link } from 'react-router-dom';
-import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { AxiosError } from 'axios';
-import { IAlert, ServerError } from '../../types/types';
+import { useState, FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axiosClient from '../../utils/axiosClient';
 import { Alert } from '../../components';
-import { useForm } from '../../hooks';
+import { useAuth, useForm } from '../../hooks';
+import { IAlert, ServerError } from '../../types/types';
 
 interface FormData {
-  name: string;
   email: string;
   password: string;
-  repeatPassword: string;
 }
 
 const INITIAL_STATE: FormData = {
-  name: '',
   email: '',
   password: '',
-  repeatPassword: '',
 };
 
-const SignUp = () => {
+const Login = () => {
   const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
 
   const [alert, setAlert] = useState<IAlert | undefined>(undefined);
 
+  const { setStateAuth } = useAuth();
+
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { name, email, password, repeatPassword } = form;
+    const { email } = form;
+    const { password } = form;
 
-    if ([name, email, password, repeatPassword].includes('')) {
+    if ([email, password].includes('')) {
       setAlert({
         msg: 'All fields are required',
-        error: true,
-      });
-    }
-
-    if (password !== repeatPassword) {
-      setAlert({
-        msg: 'The passwords does not match',
-        error: true,
-      });
-    }
-
-    if (password !== undefined && password.length < 6) {
-      setAlert({
-        msg: 'The password must have 6 characters at least',
         error: true,
       });
     }
@@ -54,18 +41,15 @@ const SignUp = () => {
     setAlert(undefined);
 
     try {
-      const { data } = await axiosClient.post('/users', {
-        name,
+      const { data } = await axiosClient.post('/users/login', {
         email,
         password,
       });
 
-      setAlert({
-        msg: data.msg,
-        error: false,
-      });
-
+      localStorage.setItem('token', data.token);
+      setStateAuth(data);
       clearForm();
+      navigate('/projects');
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
@@ -75,33 +59,19 @@ const SignUp = () => {
       });
     }
   };
+
   return (
     <>
       <h1 className='text-sky-600 font-black text-6xl capitalize'>
-        Sign In and manage your <span className='text-slate-700'>projects</span>
+        Login to manage your <span className='text-slate-700'>projects</span>
       </h1>
 
       {alert?.msg && <Alert msg={alert.msg} error={alert.error} />}
 
       <form
-        onSubmit={handleSubmit}
         className='my-10 bg-white shadow rounded-lg p-10'
+        onSubmit={handleSubmit}
       >
-        <div className='my-5'>
-          <label
-            className='uppercase text-gray-600  block text-xl font-bold'
-            htmlFor='name'
-          >
-            Name
-          </label>
-          <input
-            type='text'
-            placeholder='Type your name'
-            className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
-            {...register('name')}
-          />
-        </div>
-
         <div className='my-5'>
           <label
             className='uppercase text-gray-600  block text-xl font-bold'
@@ -132,34 +102,19 @@ const SignUp = () => {
           />
         </div>
 
-        <div className='my-5'>
-          <label
-            className='uppercase text-gray-600  block text-xl font-bold'
-            htmlFor='repeatPassword'
-          >
-            Repeat Password
-          </label>
-          <input
-            type='password'
-            placeholder='Type your password again'
-            className='w-full mt-3 p-3 border rounded-xl bg-gray-50'
-            {...register('repeatPassword')}
-          />
-        </div>
-
         <input
           type='submit'
-          value='Sign Up'
-          className='bg-sky-700 w-full mb-5 py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors'
+          value='Login'
+          className='bg-sky-700 w-full mb-5 py-3 text-white uppercase font-bold rounded hover:bg-sky-800 transition-colors'
         />
       </form>
 
       <nav className='lg:flex lg:justify-between'>
         <Link
           className='block text-center my-5 text-slate-500 uppercase text-sm'
-          to='/'
+          to='/sign-up'
         >
-          Already have an account? Login
+          Don't have an account? Sign Up
         </Link>
         <Link
           className='block text-center my-5 text-slate-500 uppercase text-sm'
@@ -172,4 +127,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Login;

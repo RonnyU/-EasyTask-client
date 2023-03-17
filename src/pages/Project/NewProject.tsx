@@ -1,9 +1,13 @@
+import ProjectForm from '../../components/ProjectForm';
+
 const NewProject = () => {
   return (
     <>
-      <h1 className='font-black text-4xl'>Projects</h1>
+      <h1 className='font-black text-4xl'>Create Project</h1>
 
-      <div></div>
+      <div className='mt-10 flex justify-center'>
+        <ProjectForm />
+      </div>
     </>
   );
 };

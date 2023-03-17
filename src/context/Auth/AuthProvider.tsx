@@ -1,8 +1,7 @@
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { IUser, Props, ServerError } from '../../types/types';
-import axiosClient from '../../utils/axiosClient';
+import axiosClient, { RequestHeaderMaker } from '../../utils/axiosClient';
 import AuthContext from './AuthContext';
 
 const INITIAL_STATE = {
@@ -16,7 +15,6 @@ const AuthProvider = ({ children }: Props) => {
   const [auth, setAuth] = useState<IUser>(INITIAL_STATE);
   const [loading, setLoading] = useState(true);
 
-  const navigate = useNavigate();
   useEffect(() => {
     authenticateUser();
   }, []);
@@ -29,18 +27,12 @@ const AuthProvider = ({ children }: Props) => {
       return;
     }
 
-    const requestConfig = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    };
+    const requestConfig = RequestHeaderMaker(token);
 
     try {
       const { data } = await axiosClient('/users/profile', requestConfig);
 
       setAuth(data);
-      navigate('/projects');
     } catch (error) {
       setAuth(INITIAL_STATE);
       const errMsg = (error as AxiosError).response?.data as ServerError;

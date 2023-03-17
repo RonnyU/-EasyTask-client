@@ -25,6 +25,8 @@ const NewPassword = () => {
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [passwordSaved, setPasswordSaved] = useState(false);
 
+  let timer: NodeJS.Timeout;
+
   useEffect(() => {
     let source = axios.CancelToken.source();
     const checkToken = async () => {
@@ -47,6 +49,7 @@ const NewPassword = () => {
 
     return () => {
       source.cancel('Cancelling in cleanup');
+      clearTimeout(timer);
     };
   }, []);
 
@@ -75,9 +78,9 @@ const NewPassword = () => {
         msg: data.msg,
         error: false,
       });
-      //Todo make a hook for timeout
+
       clearForm();
-      setTimeout(() => navigate('/'), 3000);
+      timer = setTimeout(() => navigate('/'), 3000);
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
@@ -120,7 +123,7 @@ const NewPassword = () => {
           <input
             type='submit'
             value='Save New Password'
-            className='bg-sky-700 w-full mb-5 py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors'
+            className='bg-sky-700 w-full mb-5 py-3 text-white uppercase font-bold rounded  hover:bg-sky-800 transition-colors'
           />
         </form>
       )}

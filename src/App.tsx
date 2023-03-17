@@ -6,6 +6,7 @@ import {
   Login,
   NewPassword,
   NewProject,
+  Project,
   Projects,
   ResetPassword,
   SignUp,
@@ -28,6 +29,7 @@ function App() {
             <Route path='/projects' element={<PrivateRoute />}>
               <Route index element={<Projects />} />
               <Route path='new-project' element={<NewProject />} />
+              <Route path=':id' element={<Project />} />
             </Route>
           </Routes>
         </ProjectProvider>

@@ -1,7 +1,15 @@
 import { createContext } from 'react';
-import { IUser } from '../../types/types';
+import { IAlert, IProject } from '../../types/types';
 
-type ProjectContextProps = {};
+type ProjectContextProps = {
+  projects: IProject[];
+  project: IProject;
+  alert: IAlert;
+  loading: boolean;
+  showAlert: (alertDefined: IAlert) => void;
+  submitProject: (project: IProject) => void;
+  getProject: (id: string) => void;
+};
 
 const ProjectContext = createContext<ProjectContextProps>(
   {} as ProjectContextProps

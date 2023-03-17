@@ -24,13 +24,13 @@ export interface IUser {
 }
 
 export interface IProject {
-  _id: string;
+  _id?: string;
   name: string;
   description: string;
   deadline: string;
   client: string;
-  createdby: string;
-  partners: IUser[];
+  createdby?: string;
+  partners?: IUser[];
 }
 
 //* Types

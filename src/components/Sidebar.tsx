@@ -3,7 +3,6 @@ import { useAuth } from '../hooks';
 
 const Sidebar = () => {
   const { auth } = useAuth();
-  console.log(auth.name);
 
   return (
     <aside className='md:w-80 lg:w-96 px-5 py-10'>
