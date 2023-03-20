@@ -9,6 +9,8 @@ type ProjectContextProps = {
   showAlert: (alertDefined: IAlert) => void;
   submitProject: (project: IProject) => void;
   getProject: (id: string) => void;
+  clearProjectState: () => void;
+  deleteProject: (id: string) => void;
 };
 
 const ProjectContext = createContext<ProjectContextProps>(

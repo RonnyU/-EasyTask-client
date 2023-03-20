@@ -9,6 +9,7 @@ import SignUp from './Session/SignUp';
 import NewProject from './Project/NewProject';
 import Projects from './Project/Projects';
 import Project from './Project/Project';
+import EditProject from './Project/EditProject';
 
 export {
   ConfirmAccount,
@@ -19,4 +20,5 @@ export {
   NewProject,
   Projects,
   Project,
+  EditProject,
 };

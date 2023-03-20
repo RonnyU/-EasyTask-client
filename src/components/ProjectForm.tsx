@@ -1,6 +1,6 @@
-import { FormEvent } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useForm, useProject } from '../hooks';
-import { IProject } from '../types/types';
 import Alert from './Alert';
 
 interface FormData {
@@ -18,9 +18,20 @@ const INITIAL_STATE: FormData = {
 };
 
 const ProjectForm = () => {
-  const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
-  const { showAlert, alert, submitProject } = useProject();
+  const { form, register, clearForm, defineForm } =
+    useForm<FormData>(INITIAL_STATE);
+  const { showAlert, alert, submitProject, project, clearProjectState } =
+    useProject();
 
+  const params = useParams();
+
+  useEffect(() => {
+    if (params.id) {
+      defineForm(project);
+    } else {
+      clearProjectState();
+    }
+  }, [params]);
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -34,7 +45,13 @@ const ProjectForm = () => {
       return;
     }
 
-    await submitProject({ name, description, deadline, client });
+    await submitProject({
+      name,
+      description,
+      deadline,
+      client,
+      _id: project._id,
+    });
 
     clearForm();
   };
@@ -106,7 +123,7 @@ const ProjectForm = () => {
 
       <input
         type='submit'
-        value='Create Project'
+        value={project._id ? 'Edit Project' : 'Create Project'}
         className='bg-sky-600 w-full p-3 uppercase font-bold text-white rounded hover:bg-sky-700 transition-colors'
       />
     </form>

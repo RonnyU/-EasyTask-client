@@ -3,6 +3,7 @@ import { AuthProvider, ProjectProvider } from './context';
 import { AuthLayout, PrivateRoute } from './layouts';
 import {
   ConfirmAccount,
+  EditProject,
   Login,
   NewPassword,
   NewProject,
@@ -29,6 +30,7 @@ function App() {
             <Route path='/projects' element={<PrivateRoute />}>
               <Route index element={<Projects />} />
               <Route path='new-project' element={<NewProject />} />
+              <Route path='edit/:id' element={<EditProject />} />
               <Route path=':id' element={<Project />} />
             </Route>
           </Routes>

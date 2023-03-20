@@ -12,6 +12,10 @@ export default function useForm<T>(initState: T) {
     });
   };
 
+  const defineForm = (initState: T) => {
+    setForm(initState);
+  };
+
   const register = (name: string, id?: string) => {
     let key = name as keyof typeof form;
     const value = form[key];
@@ -33,5 +37,6 @@ export default function useForm<T>(initState: T) {
     handleChange,
     clearForm,
     register,
+    defineForm,
   };
 }
