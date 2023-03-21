@@ -33,6 +33,14 @@ export interface IProject {
   partners?: IUser[];
 }
 
+export interface ITask {
+  name: string;
+  description: string;
+  priority: string;
+  deadline: string;
+  project?: string;
+}
+
 //* Types
 
 export type Props = {

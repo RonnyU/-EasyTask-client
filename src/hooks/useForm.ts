@@ -3,7 +3,7 @@ import { ChangeEvent, useState } from 'react';
 export default function useForm<T>(initState: T) {
   const [form, setForm] = useState(initState);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
 
     setForm({
@@ -25,7 +25,7 @@ export default function useForm<T>(initState: T) {
       name,
       id,
       value,
-      onChange: (e: ChangeEvent<HTMLInputElement>) => handleChange(e),
+      onChange: (e: any) => handleChange(e),
     };
   };
 
@@ -34,7 +34,6 @@ export default function useForm<T>(initState: T) {
   };
   return {
     form,
-    handleChange,
     clearForm,
     register,
     defineForm,

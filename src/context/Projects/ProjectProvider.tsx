@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IAlert, IProject, Props } from '../../types/types';
+import { IAlert, IProject, ITask, Props } from '../../types/types';
 import axiosClient, { RequestHeaderMaker } from '../../utils/axiosClient';
 import ProjectContext from './ProjectContext';
 
@@ -24,12 +24,17 @@ const ProjectProvider = ({ children }: Props) => {
   const [alert, setAlert] = useState<IAlert>(INITIAL_ALERT_STATE);
   const [project, setProject] = useState<IProject>(INITIAL_STATE);
   const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     getProjects();
   }, []);
+
+  // -------------------------------------------------
+  // --------------------PROJECT----------------------
+  //--------------------------------------------------
 
   const getProjects = async () => {
     try {
@@ -177,9 +182,47 @@ const ProjectProvider = ({ children }: Props) => {
     }
   };
 
+  //--------------------------------------------------
+  //---------------------*TASK*------------------------
+  //--------------------------------------------------
+
+  const submitTask = async (task: ITask) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const requestHeaders = RequestHeaderMaker(token);
+
+      task.project = project._id;
+
+      const { data } = await axiosClient.post('/tasks', task, requestHeaders);
+
+      console.log(data);
+
+      setAlert({
+        msg: 'Task Created Successfully',
+        error: false,
+      });
+
+      setTimeout(() => {
+        setAlert(INITIAL_ALERT_STATE);
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //--------------------------------------------------
+  //---------------------*OTHERS*---------------------
+  //--------------------------------------------------
+
   const showAlert = (alertDefined: IAlert) => {
     setAlert(alertDefined);
     setTimeout(() => setAlert(INITIAL_ALERT_STATE), 5000);
+  };
+
+  const openModal = () => {
+    setModal(!modal);
   };
 
   const clearProjectState = () => {
@@ -193,11 +236,14 @@ const ProjectProvider = ({ children }: Props) => {
         project,
         alert,
         loading,
+        modal,
         showAlert,
         submitProject,
+        submitTask,
         getProject,
         clearProjectState,
         deleteProject,
+        openModal,
       }}
     >
       {children}

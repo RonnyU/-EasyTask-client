@@ -1,4 +1,4 @@
-import ProjectPreview from '../../components/ProjectPreview';
+import { ProjectPreview } from '../../components';
 import { useProject } from '../../hooks';
 
 const Projects = () => {
