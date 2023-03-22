@@ -3,7 +3,7 @@ import { FormEvent, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Alert } from '../../components';
 import { useForm } from '../../hooks';
-import { IAlert, ServerError } from '../../types/types';
+import { AlertType, ServerError } from '../../types/types';
 import axiosClient from '../../utils/axiosClient';
 
 interface FormData {
@@ -17,7 +17,7 @@ const INITIAL_STATE: FormData = {
 const ResetPassword = () => {
   const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
 
-  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
+  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

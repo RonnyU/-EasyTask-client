@@ -51,6 +51,8 @@ const ProjectForm = () => {
       deadline,
       client,
       _id: project._id,
+      tasks: [],
+      partners: [],
     });
 
     clearForm();

@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 
 export default function useForm<T>(initState: T) {
   const [form, setForm] = useState(initState);

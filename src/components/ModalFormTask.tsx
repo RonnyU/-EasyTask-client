@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect, ChangeEvent } from 'react';
+import { Fragment, ChangeEvent, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useForm, useProject } from '../hooks';
 import Alert from './Alert';
@@ -13,9 +13,25 @@ const INIT_TASK = {
 const PRIORITY = ['Low', 'Intermediate', 'High'];
 
 const ModalFormTask = () => {
-  const { modal, openModal, showAlert, alert, submitTask } = useProject();
+  const {
+    modal,
+    openModal,
+    showAlert,
+    alert,
+    submitTask,
+    task,
+    clearTaskState,
+  } = useProject();
 
-  const { form, register, clearForm } = useForm(INIT_TASK);
+  const { form, register, clearForm, defineForm } = useForm(INIT_TASK);
+
+  useEffect(() => {
+    if (task._id) {
+      defineForm(task);
+    } else {
+      clearForm();
+    }
+  }, [task]);
 
   const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,7 +46,14 @@ const ModalFormTask = () => {
       return;
     }
 
-    submitTask({ name, description, priority, deadline });
+    submitTask({
+      name,
+      description,
+      priority,
+      deadline,
+      status: false,
+      _id: task._id,
+    });
     clearForm();
   };
 
@@ -39,7 +62,9 @@ const ModalFormTask = () => {
       <Dialog
         as='div'
         className='fixed z-10 inset-0 overflow-y-auto'
-        onClose={openModal}
+        onClose={() => {
+          openModal(), clearTaskState();
+        }}
       >
         <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
           <Transition.Child
@@ -76,7 +101,9 @@ const ModalFormTask = () => {
                 <button
                   type='button'
                   className='bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                  onClick={openModal}
+                  onClick={() => {
+                    openModal(), clearTaskState();
+                  }}
                 >
                   <span className='sr-only'>Close</span>
                   <svg
@@ -168,7 +195,9 @@ const ModalFormTask = () => {
 
                     <input
                       type='submit'
-                      className='bg-sky-600 hover:bg-sky-800 w-full p-3 text-white uppercase font-bold text-sm transition-colors rounded '
+                      className='bg-sky-600 hover:bg-sky-800 w-full p-3 text-white uppercase 
+                      font-bold text-sm transition-colors rounded '
+                      value={task._id ? 'Edit Task' : 'Create Task'}
                     />
                   </form>
                 </div>

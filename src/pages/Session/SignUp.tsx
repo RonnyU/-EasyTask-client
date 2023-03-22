@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ChangeEvent, FormEvent, useRef, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { AxiosError } from 'axios';
-import { IAlert, ServerError } from '../../types/types';
+import { AlertType, ServerError } from '../../types/types';
 import axiosClient from '../../utils/axiosClient';
 import { Alert } from '../../components';
 import { useForm } from '../../hooks';
@@ -23,7 +23,7 @@ const INITIAL_STATE: FormData = {
 const SignUp = () => {
   const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
 
-  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
+  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

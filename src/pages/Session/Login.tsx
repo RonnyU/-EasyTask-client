@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axiosClient from '../../utils/axiosClient';
 import { Alert } from '../../components';
 import { useAuth, useForm } from '../../hooks';
-import { IAlert, ServerError } from '../../types/types';
+import { AlertType, ServerError } from '../../types/types';
 
 interface FormData {
   email: string;
@@ -19,7 +19,7 @@ const INITIAL_STATE: FormData = {
 const Login = () => {
   const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
 
-  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
+  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
 
   const { setStateAuth } = useAuth();
 

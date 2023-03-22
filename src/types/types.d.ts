@@ -1,4 +1,5 @@
 //* Interfaces
+import { ITask, IProject, IUser } from '../Interfaces/interfaces';
 /*
 export declare interface AppProps {
   children?: React.ReactNode; // best, accepts everything React can render
@@ -10,38 +11,20 @@ export declare interface AppProps {
   props2?: Props & React.ComponentPropsWithRef<MyButtonWithForwardRef>; // to impersonate all the props of MyButtonForwardedRef and explicitly forwarding its ref
 }
 */
+//* Types
 
-export interface IAlert {
+export type AlertType = {
   msg: string;
   error: boolean;
-}
+};
 
-export interface IUser {
-  _id: string;
-  name: string;
-  email: string;
-  token?: string;
-}
+export type PropsProject = {
+  project: IProject;
+};
 
-export interface IProject {
-  _id?: string;
-  name: string;
-  description: string;
-  deadline: string;
-  client: string;
-  createdby?: string;
-  partners?: IUser[];
-}
-
-export interface ITask {
-  name: string;
-  description: string;
-  priority: string;
-  deadline: string;
-  project?: string;
-}
-
-//* Types
+export type PropsTasks = {
+  task: ITask;
+};
 
 export type Props = {
   children?: React.ReactNode;

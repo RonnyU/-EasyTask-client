@@ -1,11 +1,8 @@
-import { IProject } from '../types/types';
 import { Link } from 'react-router-dom';
+import { IProject } from '../Interfaces/interfaces';
+import { PropsProject } from '../types/types';
 
-interface IPropsProject {
-  project: IProject;
-}
-
-const ProjectPreview = ({ project }: IPropsProject) => {
+const ProjectPreview = ({ project }: PropsProject) => {
   const { name, _id, client } = project;
   return (
     <div className='border-b p-5 flex'>

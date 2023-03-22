@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 import ModalFormTask from './ModalFormTask';
 import ProjectForm from './ProjectForm';
 import ProjectPreview from './ProjectPreview';
+import Task from './Task';
 
 export {
   Alert,
@@ -12,4 +13,5 @@ export {
   ModalFormTask as ModalForm,
   ProjectForm,
   ProjectPreview,
+  Task,
 };

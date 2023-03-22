@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosClient from '../../utils/axiosClient';
-import { IAlert, ServerError } from '../../types/types';
+import { AlertType, ServerError } from '../../types/types';
 import axios, { AxiosError } from 'axios';
 import { Alert } from '../../components';
 import { useForm } from '../../hooks';
@@ -21,7 +21,7 @@ const NewPassword = () => {
 
   const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
 
-  const [alert, setAlert] = useState<IAlert | undefined>(undefined);
+  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [passwordSaved, setPasswordSaved] = useState(false);
 

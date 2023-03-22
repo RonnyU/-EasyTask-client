@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
-import { IUser, Props, ServerError } from '../../types/types';
+import { IUser } from '../../Interfaces/interfaces';
+import { Props, ServerError } from '../../types/types';
 import axiosClient, { RequestHeaderMaker } from '../../utils/axiosClient';
 import AuthContext from './AuthContext';
 

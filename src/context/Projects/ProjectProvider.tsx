@@ -1,17 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IAlert, IProject, ITask, Props } from '../../types/types';
+import { IProject, ITask } from '../../Interfaces/interfaces';
+import { AlertType, Props } from '../../types/types';
 import axiosClient, { RequestHeaderMaker } from '../../utils/axiosClient';
+import { formatToGTM } from '../../utils/dateFormater';
 import ProjectContext from './ProjectContext';
 
-const INITIAL_STATE = {
+const INIT_PROJECT_STATE = {
   _id: '',
   name: '',
   description: '',
   deadline: '',
   client: '',
   createdby: '',
+  tasks: [],
   partners: [],
+};
+
+const INIT_TASK_STATE = {
+  name: '',
+  description: '',
+  priority: '',
+  deadline: '',
+  status: false,
 };
 
 const INITIAL_ALERT_STATE = {
@@ -21,8 +32,9 @@ const INITIAL_ALERT_STATE = {
 
 const ProjectProvider = ({ children }: Props) => {
   const [projects, setProjects] = useState<IProject[]>([]);
-  const [alert, setAlert] = useState<IAlert>(INITIAL_ALERT_STATE);
-  const [project, setProject] = useState<IProject>(INITIAL_STATE);
+  const [alert, setAlert] = useState<AlertType>(INITIAL_ALERT_STATE);
+  const [project, setProject] = useState<IProject>(INIT_PROJECT_STATE);
+  const [task, setTask] = useState<ITask>(INIT_TASK_STATE);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
 
@@ -78,7 +90,7 @@ const ProjectProvider = ({ children }: Props) => {
 
       setProjects(projectsUpdated);
 
-      setProject(INITIAL_STATE);
+      setProject(INIT_PROJECT_STATE);
 
       setAlert({
         msg: 'Project Updated successfully',
@@ -115,7 +127,7 @@ const ProjectProvider = ({ children }: Props) => {
       );
 
       setProjects((prev) => [...prev, data]);
-      setProject(INITIAL_STATE);
+      setProject(INIT_PROJECT_STATE);
       setAlert({
         msg: 'Project created successfully',
         error: false,
@@ -139,7 +151,7 @@ const ProjectProvider = ({ children }: Props) => {
       const requestHeaders = RequestHeaderMaker(token);
 
       const { data } = await axiosClient(`/projects/${id}`, requestHeaders);
-      data.deadline = new Date(data.deadline).toLocaleDateString('en-CA');
+      data.deadline = formatToGTM(data.deadline);
       setProject(data);
     } catch (error) {
       console.log(error);
@@ -166,7 +178,7 @@ const ProjectProvider = ({ children }: Props) => {
 
       setProjects(projectsUpdated);
 
-      setProject(INITIAL_STATE);
+      setProject(INIT_PROJECT_STATE);
 
       setAlert({
         msg: data.msg,
@@ -187,18 +199,74 @@ const ProjectProvider = ({ children }: Props) => {
   //--------------------------------------------------
 
   const submitTask = async (task: ITask) => {
+    if (task._id) {
+      await ediTask(task);
+    } else {
+      await createTask(task);
+    }
+  };
+
+  const ediTask = async (task: ITask) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
 
       const requestHeaders = RequestHeaderMaker(token);
 
-      task.project = project._id;
+      const { data } = await axiosClient.put(
+        `/tasks/${task._id}`,
+        task,
+        requestHeaders
+      );
 
-      const { data } = await axiosClient.post('/tasks', task, requestHeaders);
+      const taskUpdated = project.tasks.map((taskState) =>
+        taskState._id === data._id ? data : taskState
+      );
 
-      console.log(data);
+      setProject((prev) => ({ ...prev, tasks: taskUpdated }));
 
+      setTask(INIT_TASK_STATE);
+
+      setAlert({
+        msg: 'Task Updated successfully',
+        error: false,
+      });
+
+      setTimeout(() => {
+        setAlert(INITIAL_ALERT_STATE);
+        setModal(false);
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createTask = async (task: ITask) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const requestHeaders = RequestHeaderMaker(token);
+
+      const newTask: ITask = {
+        name: task.name,
+        description: task.description,
+        priority: task.priority,
+        deadline: task.deadline,
+        status: false,
+        project: project._id,
+      };
+
+      const { data } = await axiosClient.post(
+        '/tasks',
+        newTask,
+        requestHeaders
+      );
+      const projectUpdated = { ...project };
+      projectUpdated.tasks = [...projectUpdated.tasks, data];
+
+      setProject(projectUpdated);
+      setTask(INIT_TASK_STATE);
       setAlert({
         msg: 'Task Created Successfully',
         error: false,
@@ -216,9 +284,16 @@ const ProjectProvider = ({ children }: Props) => {
   //---------------------*OTHERS*---------------------
   //--------------------------------------------------
 
-  const showAlert = (alertDefined: IAlert) => {
+  const showAlert = (alertDefined: AlertType) => {
     setAlert(alertDefined);
     setTimeout(() => setAlert(INITIAL_ALERT_STATE), 5000);
+  };
+
+  const handleEdiTask = (task: ITask) => {
+    const taskToEdit = { ...task };
+    taskToEdit.deadline = formatToGTM(task.deadline);
+    setTask(taskToEdit);
+    setModal(true);
   };
 
   const openModal = () => {
@@ -226,7 +301,10 @@ const ProjectProvider = ({ children }: Props) => {
   };
 
   const clearProjectState = () => {
-    setProject(INITIAL_STATE);
+    setProject(INIT_PROJECT_STATE);
+  };
+  const clearTaskState = () => {
+    setTask(INIT_TASK_STATE);
   };
 
   return (
@@ -234,6 +312,7 @@ const ProjectProvider = ({ children }: Props) => {
       value={{
         projects,
         project,
+        task,
         alert,
         loading,
         modal,
@@ -242,8 +321,10 @@ const ProjectProvider = ({ children }: Props) => {
         submitTask,
         getProject,
         clearProjectState,
+        clearTaskState,
         deleteProject,
         openModal,
+        handleEdiTask,
       }}
     >
       {children}
