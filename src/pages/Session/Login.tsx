@@ -49,6 +49,7 @@ const Login = () => {
       localStorage.setItem('token', data.token);
       setStateAuth(data);
       clearForm();
+
       navigate('/projects');
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;

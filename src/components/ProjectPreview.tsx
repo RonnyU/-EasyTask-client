@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { IProject } from '../Interfaces/interfaces';
+
 import { PropsProject } from '../types/types';
 
 const ProjectPreview = ({ project }: PropsProject) => {

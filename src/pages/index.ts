@@ -11,6 +11,9 @@ import Projects from './Project/Projects';
 import Project from './Project/Project';
 import EditProject from './Project/EditProject';
 
+//Collaborator
+import NewCollaborator from './NewCollaborator';
+
 export {
   ConfirmAccount,
   Login,
@@ -21,4 +24,5 @@ export {
   Projects,
   Project,
   EditProject,
+  NewCollaborator,
 };

@@ -1,12 +1,12 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useProject } from '../../hooks';
-import { ModalForm, Task } from '../../components';
+import { ModalFormTask, Task, ModalDeleteTask, Alert } from '../../components';
 
 const Project = () => {
   const params = useParams();
   const { id } = params;
-  const { getProject, project, loading, openModal } = useProject();
+  const { getProject, project, loading, openModalTask, alert } = useProject();
 
   useEffect(() => {
     if (id) {
@@ -46,7 +46,7 @@ const Project = () => {
       <button
         type='button'
         className='text-sm px-5 py-3 w-full md:w-auto rounded-lg uppercase font-bold bg-sky-400 text-white text-center flex gap-2 items-center justify-center'
-        onClick={openModal}
+        onClick={openModalTask}
       >
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -65,6 +65,12 @@ const Project = () => {
         New Task
       </button>
       <p className='font-bold text-xl mt-10'>Project Tasks</p>
+
+      <div className='flex justify-center'>
+        <div className='w-full md:w-1/3 lg:w-1/4'>
+          {alert?.msg && <Alert msg={alert.msg} error={alert.error} />}
+        </div>
+      </div>
       <div className='bg-white shadow mt-10 rounded-lg'>
         {project.tasks?.length ? (
           project.tasks?.map((task) => <Task key={task?._id} task={task} />)
@@ -72,7 +78,17 @@ const Project = () => {
           <p className='text-center my-5 p-10'>There is not tasks to display</p>
         )}
       </div>
-      <ModalForm />
+      <div className='flex items-center justify-between mt-10'>
+        <p className='font-bold text-xl'>Collaborator</p>
+        <Link
+          to={`/projects/new-collaborator/${project._id}`}
+          className='text-gray-400 uppercase font-bold hover:text-black'
+        >
+          ADD
+        </Link>
+      </div>
+      <ModalFormTask />
+      <ModalDeleteTask />
     </>
   );
 };

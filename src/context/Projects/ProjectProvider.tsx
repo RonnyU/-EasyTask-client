@@ -1,7 +1,8 @@
+import { AxiosError } from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IProject, ITask } from '../../Interfaces/interfaces';
-import { AlertType, Props } from '../../types/types';
+import { IProject, ITask, IUser } from '../../Interfaces/interfaces';
+import { AlertType, Props, ServerError } from '../../types/types';
 import axiosClient, { RequestHeaderMaker } from '../../utils/axiosClient';
 import { formatToGTM } from '../../utils/dateFormater';
 import ProjectContext from './ProjectContext';
@@ -14,7 +15,7 @@ const INIT_PROJECT_STATE = {
   client: '',
   createdby: '',
   tasks: [],
-  partners: [],
+  collaborator: [],
 };
 
 const INIT_TASK_STATE = {
@@ -30,13 +31,23 @@ const INITIAL_ALERT_STATE = {
   error: false,
 };
 
+const INIT_COLLABORATOR_STATE = {
+  _id: '',
+  name: '',
+  email: '',
+};
+
 const ProjectProvider = ({ children }: Props) => {
   const [projects, setProjects] = useState<IProject[]>([]);
   const [alert, setAlert] = useState<AlertType>(INITIAL_ALERT_STATE);
   const [project, setProject] = useState<IProject>(INIT_PROJECT_STATE);
   const [task, setTask] = useState<ITask>(INIT_TASK_STATE);
+  const [collaborator, setCollaborator] = useState<IUser>(
+    INIT_COLLABORATOR_STATE
+  );
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(false);
+  const [modalTask, setModalTask] = useState(false);
+  const [modalDeleteTask, setModalDeleteTask] = useState(false);
 
   const navigate = useNavigate();
 
@@ -154,13 +165,17 @@ const ProjectProvider = ({ children }: Props) => {
       data.deadline = formatToGTM(data.deadline);
       setProject(data);
     } catch (error) {
-      console.log(error);
+      const errMsg = (error as AxiosError).response?.data as ServerError;
+      setAlert({
+        msg: errMsg.msg,
+        error: true,
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteProject = async (id: string) => {
+  const deleteProject = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
@@ -173,7 +188,7 @@ const ProjectProvider = ({ children }: Props) => {
       );
 
       const projectsUpdated = projects.filter(
-        (projectState) => projectState._id !== id
+        (projectState) => projectState._id !== project._id
       );
 
       setProjects(projectsUpdated);
@@ -194,9 +209,9 @@ const ProjectProvider = ({ children }: Props) => {
     }
   };
 
-  //--------------------------------------------------
+  //---------------------------------------------------
   //---------------------*TASK*------------------------
-  //--------------------------------------------------
+  //---------------------------------------------------
 
   const submitTask = async (task: ITask) => {
     if (task._id) {
@@ -234,7 +249,7 @@ const ProjectProvider = ({ children }: Props) => {
 
       setTimeout(() => {
         setAlert(INITIAL_ALERT_STATE);
-        setModal(false);
+        setModalTask(false);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -280,6 +295,96 @@ const ProjectProvider = ({ children }: Props) => {
     }
   };
 
+  const deleteTask = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const requestHeaders = RequestHeaderMaker(token);
+
+      const { data } = await axiosClient.delete(
+        `/tasks/${task._id}`,
+        requestHeaders
+      );
+
+      setAlert({
+        msg: data.msg,
+        error: false,
+      });
+
+      const taskUpdated = project.tasks.filter(
+        (taskState) => taskState._id !== task._id
+      );
+
+      setProject((prev) => ({ ...prev, tasks: taskUpdated }));
+
+      setTask(INIT_TASK_STATE);
+      setModalDeleteTask(false);
+
+      setTimeout(() => {
+        setAlert(INITIAL_ALERT_STATE);
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //---------------------------------------------------
+  //---------------------*TASK*------------------------
+  //---------------------------------------------------
+  const submitCollaborator = async (email: string) => {
+    setLoading(true);
+    setCollaborator(INIT_COLLABORATOR_STATE);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const requestHeaders = RequestHeaderMaker(token);
+
+      const { data } = await axiosClient.post(
+        '/projects/collaborator',
+        { email },
+        requestHeaders
+      );
+
+      setCollaborator(data);
+      setAlert(INITIAL_ALERT_STATE);
+    } catch (error) {
+      const errMsg = (error as AxiosError).response?.data as ServerError;
+      setAlert({
+        msg: errMsg.msg,
+        error: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addCollaborator = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const requestHeaders = RequestHeaderMaker(token);
+
+      const { data } = await axiosClient.post(
+        `/projects/collaborator/${project._id}`,
+        { email: collaborator.email },
+        requestHeaders
+      );
+
+      setCollaborator(INIT_COLLABORATOR_STATE);
+
+      setAlert({ msg: data.msg, error: false });
+    } catch (error) {
+      const errMsg = (error as AxiosError).response?.data as ServerError;
+      setAlert({
+        msg: errMsg.msg,
+        error: true,
+      });
+    }
+  };
+
   //--------------------------------------------------
   //---------------------*OTHERS*---------------------
   //--------------------------------------------------
@@ -293,11 +398,20 @@ const ProjectProvider = ({ children }: Props) => {
     const taskToEdit = { ...task };
     taskToEdit.deadline = formatToGTM(task.deadline);
     setTask(taskToEdit);
-    setModal(true);
+    setModalTask(true);
   };
 
-  const openModal = () => {
-    setModal(!modal);
+  const handleDeleteTask = (task: ITask) => {
+    setTask(task);
+    setModalDeleteTask(true);
+  };
+
+  const openModalTask = () => {
+    setModalTask(!modalTask);
+  };
+
+  const openModalDeleteTask = () => {
+    setModalDeleteTask(!modalDeleteTask);
   };
 
   const clearProjectState = () => {
@@ -315,16 +429,24 @@ const ProjectProvider = ({ children }: Props) => {
         task,
         alert,
         loading,
-        modal,
+        modalTask,
+        modalDeleteTask,
+        collaborator,
         showAlert,
         submitProject,
         submitTask,
+        deleteTask,
+        getProjects,
         getProject,
         clearProjectState,
         clearTaskState,
         deleteProject,
-        openModal,
+        openModalTask,
+        openModalDeleteTask,
         handleEdiTask,
+        handleDeleteTask,
+        submitCollaborator,
+        addCollaborator,
       }}
     >
       {children}

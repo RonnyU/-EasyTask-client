@@ -1,7 +1,14 @@
-import { Fragment, ChangeEvent, useEffect } from 'react';
+import { Fragment, FormEvent, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useForm, useProject } from '../hooks';
 import Alert from './Alert';
+
+interface FormData {
+  name: string;
+  description: string;
+  priority: string;
+  deadline: string;
+}
 
 const INIT_TASK = {
   name: '',
@@ -14,8 +21,8 @@ const PRIORITY = ['Low', 'Intermediate', 'High'];
 
 const ModalFormTask = () => {
   const {
-    modal,
-    openModal,
+    modalTask,
+    openModalTask,
     showAlert,
     alert,
     submitTask,
@@ -23,7 +30,8 @@ const ModalFormTask = () => {
     clearTaskState,
   } = useProject();
 
-  const { form, register, clearForm, defineForm } = useForm(INIT_TASK);
+  const { form, register, clearForm, defineForm } =
+    useForm<FormData>(INIT_TASK);
 
   useEffect(() => {
     if (task._id) {
@@ -33,7 +41,7 @@ const ModalFormTask = () => {
     }
   }, [task]);
 
-  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const { description, name, priority, deadline } = form;
@@ -58,12 +66,12 @@ const ModalFormTask = () => {
   };
 
   return (
-    <Transition.Root show={modal} as={Fragment}>
+    <Transition.Root show={modalTask} as={Fragment}>
       <Dialog
         as='div'
         className='fixed z-10 inset-0 overflow-y-auto'
         onClose={() => {
-          openModal(), clearTaskState();
+          openModalTask(), clearTaskState();
         }}
       >
         <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
@@ -102,7 +110,7 @@ const ModalFormTask = () => {
                   type='button'
                   className='bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                   onClick={() => {
-                    openModal(), clearTaskState();
+                    openModalTask(), clearTaskState();
                   }}
                 >
                   <span className='sr-only'>Close</span>

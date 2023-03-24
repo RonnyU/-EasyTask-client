@@ -16,7 +16,7 @@ const EditProject = () => {
 
   const handleClick = () => {
     if (confirm('Do you want to delete this project?')) {
-      project._id && deleteProject(project._id);
+      project._id && deleteProject();
     }
   };
 

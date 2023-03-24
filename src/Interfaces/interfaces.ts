@@ -13,7 +13,7 @@ export interface IProject {
   client: string;
   createdby?: string;
   tasks: ITask[];
-  partners: IUser[];
+  collaborator: IUser[];
 }
 
 export interface ITask {

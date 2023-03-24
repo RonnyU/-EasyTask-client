@@ -1,8 +1,13 @@
 import { ProjectPreview } from '../../components';
 import { useProject } from '../../hooks';
+import { useEffect } from 'react';
 
 const Projects = () => {
-  const { projects } = useProject();
+  const { projects, getProjects } = useProject();
+
+  useEffect(() => {
+    getProjects();
+  }, []);
 
   return (
     <>

@@ -52,7 +52,7 @@ const ProjectForm = () => {
       client,
       _id: project._id,
       tasks: [],
-      partners: [],
+      collaborator: [],
     });
 
     clearForm();

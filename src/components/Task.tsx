@@ -4,7 +4,7 @@ import { formatWithNameToGTM } from '../utils/dateFormater';
 
 const Task = ({ task }: PropsTasks) => {
   const { name, description, deadline, priority, _id, status } = task;
-  const { handleEdiTask } = useProject();
+  const { handleEdiTask, handleDeleteTask } = useProject();
 
   return (
     <div className='border-b p-5 flex justify-between items-center'>
@@ -30,7 +30,10 @@ const Task = ({ task }: PropsTasks) => {
             Incomplete
           </button>
         )}
-        <button className='bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg'>
+        <button
+          className='bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg'
+          onClick={() => handleDeleteTask(task)}
+        >
           Delete
         </button>
       </div>

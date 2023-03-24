@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { IProject, ITask } from '../../Interfaces/interfaces';
+import { IProject, ITask, IUser } from '../../Interfaces/interfaces';
 import { AlertType } from '../../types/types';
 
 type ProjectContextProps = {
@@ -8,16 +8,24 @@ type ProjectContextProps = {
   task: ITask;
   alert: AlertType;
   loading: boolean;
-  modal: boolean;
+  modalTask: boolean;
+  modalDeleteTask: boolean;
+  collaborator: IUser;
   showAlert: (alertDefined: AlertType) => void;
-  submitProject: (project: IProject) => void;
-  submitTask: (project: ITask) => void;
-  handleEdiTask: (task: ITask) => void;
+  getProjects: () => void;
   getProject: (id: string) => void;
+  submitProject: (project: IProject) => void;
+  deleteProject: () => void;
+  submitTask: (task: ITask) => void;
+  deleteTask: () => void;
+  handleEdiTask: (task: ITask) => void;
+  handleDeleteTask: (task: ITask) => void;
   clearProjectState: () => void;
   clearTaskState: () => void;
-  openModal: () => void;
-  deleteProject: (id: string) => void;
+  openModalTask: () => void;
+  openModalDeleteTask: () => void;
+  submitCollaborator: (email: string) => void;
+  addCollaborator: () => void;
 };
 
 const ProjectContext = createContext<ProjectContextProps>(
