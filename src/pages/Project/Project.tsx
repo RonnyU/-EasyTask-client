@@ -1,7 +1,14 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useProject } from '../../hooks';
-import { ModalFormTask, Task, ModalDeleteTask, Alert } from '../../components';
+import {
+  ModalFormTask,
+  Task,
+  ModalDeleteTask,
+  Alert,
+  Collaborator,
+  ModalDeleteCollaborator,
+} from '../../components';
 
 const Project = () => {
   const params = useParams();
@@ -18,7 +25,9 @@ const Project = () => {
 
   if (loading) return <p>Loading...</p>;
 
-  return (
+  return alert?.msg && alert.error ? (
+    <Alert msg={alert.msg} error={alert.error} />
+  ) : (
     <>
       <div className='flex justify-between'>
         <h1 className='font-black text-4xl'>{name}</h1>
@@ -87,8 +96,20 @@ const Project = () => {
           ADD
         </Link>
       </div>
+
+      <div className='bg-white shadow mt-10 rounded-lg'>
+        {project.collaborator?.length ? (
+          project.collaborator?.map((col) => (
+            <Collaborator key={col._id} collaborator={col} />
+          ))
+        ) : (
+          <p className='text-center my-5 p-10'>There is not tasks to display</p>
+        )}
+      </div>
+
       <ModalFormTask />
       <ModalDeleteTask />
+      <ModalDeleteCollaborator />
     </>
   );
 };

@@ -7,6 +7,8 @@ import ProjectPreview from './ProjectPreview';
 import Task from './Task';
 import ModalDeleteTask from './ModalDeleteTask';
 import CollaboratorForm from './CollaboratorForm';
+import Collaborator from './Collaborator';
+import ModalDeleteCollaborator from './ModalDeleteCollaborator';
 
 export {
   Alert,
@@ -18,4 +20,6 @@ export {
   Task,
   ModalDeleteTask,
   CollaboratorForm,
+  Collaborator,
+  ModalDeleteCollaborator,
 };

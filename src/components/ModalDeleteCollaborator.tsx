@@ -2,19 +2,20 @@ import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useProject } from '../hooks';
 
-const ModalDeleteTask = () => {
-  const { modalDeleteTask, openModalDeleteTask, deleteTask, clearTaskState } =
-    useProject();
+const ModalDeleteCollaborator = () => {
+  const {
+    modalDeleteCollaborator,
+    openModalDeleteCollaborator,
+    collaborator,
+    deleteCollaborator,
+  } = useProject();
 
   return (
-    <Transition.Root show={modalDeleteTask} as={Fragment}>
+    <Transition.Root show={modalDeleteCollaborator} as={Fragment}>
       <Dialog
         as='div'
         className='fixed z-10 inset-0 overflow-y-auto'
-        onClose={() => {
-          openModalDeleteTask();
-          clearTaskState();
-        }}
+        onClose={openModalDeleteCollaborator}
       >
         <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
           <Transition.Child
@@ -51,10 +52,7 @@ const ModalDeleteTask = () => {
                 <button
                   type='button'
                   className='bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                  onClick={() => {
-                    openModalDeleteTask();
-                    clearTaskState();
-                  }}
+                  onClick={openModalDeleteCollaborator}
                 >
                   <span className='sr-only'>Close</span>
                   <svg
@@ -92,12 +90,14 @@ const ModalDeleteTask = () => {
                     as='h3'
                     className='text-lg leading-6 font-bold text-gray-900'
                   >
-                    Delete Task
+                    Delete Collaborator
                   </Dialog.Title>
                   <div className='mt-2'>
                     <p className='text-sm text-gray-500'>
-                      deleted tasks cannot be recovered.
-                      <br /> Are you sure to delete the task?
+                      The collaborator you remove will no longer have access to
+                      the project
+                      <br /> Are you sure to delete {collaborator.name} as
+                      collaborator?
                     </p>
                   </div>
                 </div>
@@ -108,7 +108,7 @@ const ModalDeleteTask = () => {
                   className='w-full inline-flex justify-center rounded-md border border-transparent 
                   shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 
                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm'
-                  onClick={deleteTask}
+                  onClick={deleteCollaborator}
                 >
                   Delete
                 </button>
@@ -118,10 +118,7 @@ const ModalDeleteTask = () => {
                    border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700
                     hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 
                     sm:mt-0 sm:w-auto sm:text-sm'
-                  onClick={() => {
-                    openModalDeleteTask();
-                    clearTaskState();
-                  }}
+                  onClick={openModalDeleteCollaborator}
                 >
                   Cancel
                 </button>
@@ -134,4 +131,4 @@ const ModalDeleteTask = () => {
   );
 };
 
-export default ModalDeleteTask;
+export default ModalDeleteCollaborator;
