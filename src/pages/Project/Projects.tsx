@@ -1,9 +1,9 @@
-import { ProjectPreview } from '../../components';
+import { Alert, ProjectPreview } from '../../components';
 import { useProject } from '../../hooks';
 import { useEffect } from 'react';
 
 const Projects = () => {
-  const { projects, getProjects } = useProject();
+  const { projects, getProjects, alert } = useProject();
 
   useEffect(() => {
     getProjects();
@@ -12,6 +12,8 @@ const Projects = () => {
   return (
     <>
       <h1 className='font-black text-4xl'>Projects</h1>
+
+      {alert?.msg && <Alert msg={alert.msg} error={alert.error} />}
 
       <div className='bg-white shadow mt-10 rounded-lg'>
         {projects.length ? (

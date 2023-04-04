@@ -173,11 +173,16 @@ const ProjectProvider = ({ children }: Props) => {
       setProject(data);
       setAlert(INITIAL_ALERT_STATE);
     } catch (error) {
+      navigate('/projects');
       const errMsg = (error as AxiosError).response?.data as ServerError;
       setAlert({
         msg: errMsg.msg,
         error: true,
       });
+
+      setTimeout(() => {
+        setAlert(INITIAL_ALERT_STATE);
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -337,8 +342,33 @@ const ProjectProvider = ({ children }: Props) => {
     }
   };
 
+  const completeTask = async (taskId: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const requestHeaders = RequestHeaderMaker(token);
+
+      const { data } = await axiosClient.post(
+        `/tasks/status/${taskId}`,
+        {},
+        requestHeaders
+      );
+
+      const taskUpdated = project.tasks.map((taskState) =>
+        taskState._id === data._id ? data : taskState
+      );
+
+      setProject((prev) => ({ ...prev, tasks: taskUpdated }));
+      setTask(INIT_TASK_STATE);
+      setAlert(INITIAL_ALERT_STATE);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //---------------------------------------------------
-  //---------------------*TASK*------------------------
+  //------------------*Collaborator*-------------------
   //---------------------------------------------------
   const submitCollaborator = async (email: string) => {
     setLoading(true);
@@ -511,6 +541,7 @@ const ProjectProvider = ({ children }: Props) => {
         submitCollaborator,
         addCollaborator,
         deleteCollaborator,
+        completeTask,
       }}
     >
       {children}

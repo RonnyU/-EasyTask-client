@@ -30,6 +30,7 @@ type ProjectContextProps = {
   submitCollaborator: (email: string) => void;
   addCollaborator: () => void;
   deleteCollaborator: () => void;
+  completeTask: (taskId: string) => void;
 };
 
 const ProjectContext = createContext<ProjectContextProps>(
