@@ -12,6 +12,7 @@ type ProjectContextProps = {
   modalDeleteTask: boolean;
   modalDeleteCollaborator: boolean;
   collaborator: IUser;
+  searchBar: boolean;
   showAlert: (alertDefined: AlertType) => void;
   getProjects: () => void;
   getProject: (id: string) => void;
@@ -31,6 +32,7 @@ type ProjectContextProps = {
   addCollaborator: () => void;
   deleteCollaborator: () => void;
   completeTask: (taskId: string) => void;
+  handleSearchBar: () => void;
 };
 
 const ProjectContext = createContext<ProjectContextProps>(

@@ -9,6 +9,7 @@ import {
   Collaborator,
   ModalDeleteCollaborator,
 } from '../../components';
+import { ITask } from '../../Interfaces/interfaces';
 
 const Project = () => {
   const params = useParams();
@@ -80,7 +81,9 @@ const Project = () => {
 
       <div className='bg-white shadow mt-10 rounded-lg'>
         {project.tasks?.length ? (
-          project.tasks?.map((task) => <Task key={task?._id} task={task} />)
+          project.tasks?.map((task: ITask) => (
+            <Task key={task?._id} task={task} />
+          ))
         ) : (
           <p className='text-center my-5 p-10'>There is not tasks to display</p>
         )}

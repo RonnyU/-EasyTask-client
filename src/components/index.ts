@@ -9,6 +9,7 @@ import ModalDeleteTask from './ModalDeleteTask';
 import CollaboratorForm from './CollaboratorForm';
 import Collaborator from './Collaborator';
 import ModalDeleteCollaborator from './ModalDeleteCollaborator';
+import SearchBar from './SearchBar';
 
 export {
   Alert,
@@ -22,4 +23,5 @@ export {
   CollaboratorForm,
   Collaborator,
   ModalDeleteCollaborator,
+  SearchBar,
 };

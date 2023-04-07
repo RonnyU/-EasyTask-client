@@ -55,6 +55,7 @@ const ProjectProvider = ({ children }: Props) => {
   const [modalTask, setModalTask] = useState(false);
   const [modalDeleteTask, setModalDeleteTask] = useState(false);
   const [modalDeleteCollaborator, setModalDeleteCollaborator] = useState(false);
+  const [searchBar, setSearchBar] = useState(false);
 
   const navigate = useNavigate();
 
@@ -511,6 +512,10 @@ const ProjectProvider = ({ children }: Props) => {
     setTask(INIT_TASK_STATE);
   };
 
+  const handleSearchBar = () => {
+    setSearchBar(!searchBar);
+  };
+
   return (
     <ProjectContext.Provider
       value={{
@@ -523,6 +528,7 @@ const ProjectProvider = ({ children }: Props) => {
         modalDeleteTask,
         modalDeleteCollaborator,
         collaborator,
+        searchBar,
         showAlert,
         submitProject,
         submitTask,
@@ -542,6 +548,7 @@ const ProjectProvider = ({ children }: Props) => {
         addCollaborator,
         deleteCollaborator,
         completeTask,
+        handleSearchBar,
       }}
     >
       {children}

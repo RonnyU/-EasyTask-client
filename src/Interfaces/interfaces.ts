@@ -24,4 +24,5 @@ export interface ITask {
   priority: string;
   deadline: string;
   project?: string;
+  completed?: Pick<IUser, 'name' | '_id'>;
 }
