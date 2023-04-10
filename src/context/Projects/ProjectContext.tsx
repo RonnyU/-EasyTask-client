@@ -33,6 +33,11 @@ type ProjectContextProps = {
   deleteCollaborator: () => void;
   completeTask: (taskId: string) => void;
   handleSearchBar: () => void;
+  resetProjectProviderStates: () => void;
+  socketCreateTask: (task: ITask) => void;
+  socketDeleteTask: (task: ITask) => void;
+  socketUpdateTask: (task: ITask) => void;
+  socketCompleteTask: (task: ITask) => void;
 };
 
 const ProjectContext = createContext<ProjectContextProps>(

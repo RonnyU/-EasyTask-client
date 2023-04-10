@@ -5,10 +5,6 @@ import { useEffect } from 'react';
 const Projects = () => {
   const { projects, getProjects, alert } = useProject();
 
-  useEffect(() => {
-    getProjects();
-  }, []);
-
   return (
     <>
       <h1 className='font-black text-4xl'>Projects</h1>

@@ -47,8 +47,14 @@ const AuthProvider = ({ children }: Props) => {
     setAuth(user);
   };
 
+  const resetAuthProviderStates = () => {
+    setAuth(INITIAL_STATE);
+  };
+
   return (
-    <AuthContext.Provider value={{ auth, setStateAuth, loading }}>
+    <AuthContext.Provider
+      value={{ auth, setStateAuth, loading, resetAuthProviderStates }}
+    >
       {children}
     </AuthContext.Provider>
   );

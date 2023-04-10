@@ -5,23 +5,90 @@ import {
   ModalFormTask,
   Task,
   ModalDeleteTask,
-  Alert,
   Collaborator,
   ModalDeleteCollaborator,
 } from '../../components';
-import { ITask } from '../../Interfaces/interfaces';
+import { io, Socket } from 'socket.io-client';
+import {
+  ClientToServerEvents,
+  ITask,
+  ITaskWithProject,
+  ServerToClientEvents,
+} from '../../Interfaces/interfaces';
+
+let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
 
 const Project = () => {
   const params = useParams();
   const { id } = params;
-  const { getProject, project, loading, openModalTask, alert } = useProject();
+  const {
+    getProject,
+    project,
+    loading,
+    openModalTask,
+    socketCreateTask,
+    socketDeleteTask,
+    socketUpdateTask,
+    socketCompleteTask,
+  } = useProject();
   const admin = useAdmin();
+
+  let x: ITaskWithProject;
 
   useEffect(() => {
     if (id) {
       getProject(id);
     }
+  }, [id]);
+
+  useEffect(() => {
+    socket = io(import.meta.env.VITE_API_URL);
+    socket.emit('openProject', String(id));
   }, []);
+
+  useEffect(() => {
+    socket.on('taskAdded', (taskAdded) => {
+      if (taskAdded.project === project._id) {
+        socketCreateTask(taskAdded);
+      }
+    });
+
+    socket.on('taskDeleted', (taskDeleted) => {
+      if (taskDeleted.project === project._id) {
+        socketDeleteTask(taskDeleted);
+      }
+    });
+
+    socket.on('taskUpdated', (taskWithProjectUpdated: ITaskWithProject) => {
+      if (taskWithProjectUpdated.project._id === project._id) {
+        const taskUpdate: ITask = {
+          _id: taskWithProjectUpdated._id,
+          name: taskWithProjectUpdated.name,
+          description: taskWithProjectUpdated.description,
+          deadline: taskWithProjectUpdated.deadline,
+          priority: taskWithProjectUpdated.priority,
+          status: taskWithProjectUpdated.status,
+          completed: taskWithProjectUpdated.completed,
+        };
+        socketUpdateTask(taskUpdate);
+      }
+    });
+
+    socket.on('taskCompleted', (taskWithProjectCompleted: ITaskWithProject) => {
+      if (taskWithProjectCompleted.project._id === project._id) {
+        const taskUpdate: ITask = {
+          _id: taskWithProjectCompleted._id,
+          name: taskWithProjectCompleted.name,
+          description: taskWithProjectCompleted.description,
+          deadline: taskWithProjectCompleted.deadline,
+          priority: taskWithProjectCompleted.priority,
+          status: taskWithProjectCompleted.status,
+          completed: taskWithProjectCompleted.completed,
+        };
+        socketCompleteTask(taskUpdate);
+      }
+    });
+  });
 
   const { name } = project;
 
@@ -29,7 +96,7 @@ const Project = () => {
 
   return (
     <>
-      <div className='flex justify-between'>
+      <div className='flex justify-between mb-5'>
         <h1 className='font-black text-4xl'>{name}</h1>
         {admin && (
           <div className='flex items-center gap-2 text-gray-400 hover:text-black'>
@@ -81,9 +148,7 @@ const Project = () => {
 
       <div className='bg-white shadow mt-10 rounded-lg'>
         {project.tasks?.length ? (
-          project.tasks?.map((task: ITask) => (
-            <Task key={task?._id} task={task} />
-          ))
+          project.tasks?.map((task) => <Task key={task?._id} task={task} />)
         ) : (
           <p className='text-center my-5 p-10'>There is not tasks to display</p>
         )}

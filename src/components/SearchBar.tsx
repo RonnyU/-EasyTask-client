@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react';
 import { Combobox, Dialog, Transition } from '@headlessui/react';
 import { useProject } from '../hooks';
 import { IProject } from '../Interfaces/interfaces';
+import { useNavigate } from 'react-router-dom';
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ');
@@ -10,6 +11,8 @@ function classNames(...classes: any) {
 const SearchBar = () => {
   const [search, setSearch] = useState('');
   const { searchBar, handleSearchBar, projects } = useProject();
+  const navigate = useNavigate();
+
   const filteredProjects =
     search === ''
       ? []
@@ -52,7 +55,7 @@ const SearchBar = () => {
             as='div'
             className='mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all'
             onChange={(project: IProject) =>
-              (window.location.href = `/projects/${project._id}`)
+              navigate(`/projects/${project._id}`)
             }
           >
             <div className='relative'>

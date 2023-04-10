@@ -13,6 +13,13 @@ import axiosClient, { RequestHeaderMaker } from '../../utils/axiosClient';
 import { formatToGTM } from '../../utils/dateFormater';
 import ProjectContext from './ProjectContext';
 
+import { io, Socket } from 'socket.io-client';
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from '../../Interfaces/interfaces';
+import { useAuth } from '../../hooks';
+
 const INIT_PROJECT_STATE = {
   _id: '',
   name: '',
@@ -43,6 +50,8 @@ const INIT_COLLABORATOR_STATE = {
   email: '',
 };
 
+let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
+
 const ProjectProvider = ({ children }: Props) => {
   const [projects, setProjects] = useState<IProject[]>([]);
   const [alert, setAlert] = useState<AlertType>(INITIAL_ALERT_STATE);
@@ -58,9 +67,14 @@ const ProjectProvider = ({ children }: Props) => {
   const [searchBar, setSearchBar] = useState(false);
 
   const navigate = useNavigate();
+  const { auth } = useAuth();
 
   useEffect(() => {
     getProjects();
+  }, [auth]);
+
+  useEffect(() => {
+    socket = io(import.meta.env.VITE_API_URL);
   }, []);
 
   // -------------------------------------------------
@@ -261,6 +275,9 @@ const ProjectProvider = ({ children }: Props) => {
         error: false,
       });
 
+      //SOCKET IO
+      socket.emit('updateTask', data);
+
       setTimeout(() => {
         setAlert(INITIAL_ALERT_STATE);
         setModalTask(false);
@@ -291,15 +308,15 @@ const ProjectProvider = ({ children }: Props) => {
         newTask,
         requestHeaders
       );
-      const projectUpdated = { ...project };
-      projectUpdated.tasks = [...projectUpdated.tasks, data];
 
-      setProject(projectUpdated);
       setTask(INIT_TASK_STATE);
       setAlert({
         msg: 'Task Created Successfully',
         error: false,
       });
+
+      //SOCKET IO
+      socket.emit('newTask', data);
 
       setTimeout(() => {
         setAlert(INITIAL_ALERT_STATE);
@@ -326,14 +343,11 @@ const ProjectProvider = ({ children }: Props) => {
         error: false,
       });
 
-      const taskUpdated = project.tasks.filter(
-        (taskState) => taskState._id !== task._id
-      );
-
-      setProject((prev) => ({ ...prev, tasks: taskUpdated }));
-
       setTask(INIT_TASK_STATE);
       setModalDeleteTask(false);
+
+      //SOCKET IO
+      socket.emit('deleteTask', task);
 
       setTimeout(() => {
         setAlert(INITIAL_ALERT_STATE);
@@ -356,13 +370,10 @@ const ProjectProvider = ({ children }: Props) => {
         requestHeaders
       );
 
-      const taskUpdated = project.tasks.map((taskState) =>
-        taskState._id === data._id ? data : taskState
-      );
-
-      setProject((prev) => ({ ...prev, tasks: taskUpdated }));
       setTask(INIT_TASK_STATE);
       setAlert(INITIAL_ALERT_STATE);
+
+      socket.emit('completeTask', data);
     } catch (error) {
       console.log(error);
     }
@@ -516,6 +527,46 @@ const ProjectProvider = ({ children }: Props) => {
     setSearchBar(!searchBar);
   };
 
+  const resetProjectProviderStates = () => {
+    setProjects([]);
+    setProject(INIT_PROJECT_STATE);
+    setAlert(INITIAL_ALERT_STATE);
+    setCollaborator(INIT_COLLABORATOR_STATE);
+  };
+  //--------------------------------------------------
+  //-------------------*SocketIO*---------------------
+  //--------------------------------------------------
+
+  const socketCreateTask = (task: ITask) => {
+    const projectUpdated = { ...project };
+    projectUpdated.tasks = [...projectUpdated.tasks, task];
+
+    setProject(projectUpdated);
+  };
+
+  const socketDeleteTask = (task: ITask) => {
+    const taskUpdated = project.tasks.filter(
+      (taskState) => taskState._id !== task._id
+    );
+
+    setProject((prev) => ({ ...prev, tasks: taskUpdated }));
+  };
+
+  const socketUpdateTask = (task: ITask) => {
+    const taskUpdated = project.tasks.map((taskState) =>
+      taskState._id === task._id ? task : taskState
+    );
+
+    setProject((prev) => ({ ...prev, tasks: taskUpdated }));
+  };
+  const socketCompleteTask = (task: ITask) => {
+    const taskUpdated = project.tasks.map((taskState) =>
+      taskState._id === task._id ? task : taskState
+    );
+
+    setProject((prev) => ({ ...prev, tasks: taskUpdated }));
+  };
+
   return (
     <ProjectContext.Provider
       value={{
@@ -549,6 +600,11 @@ const ProjectProvider = ({ children }: Props) => {
         deleteCollaborator,
         completeTask,
         handleSearchBar,
+        resetProjectProviderStates,
+        socketCreateTask,
+        socketDeleteTask,
+        socketUpdateTask,
+        socketCompleteTask,
       }}
     >
       {children}

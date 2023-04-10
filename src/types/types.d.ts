@@ -18,6 +18,8 @@ export type AlertType = {
   error: boolean;
 };
 
+export type TaskWithProjectType = Omit<ITask, 'project'>;
+
 export type Collaborator = Omit<IUser, 'token'>;
 
 export type PropsProject = {

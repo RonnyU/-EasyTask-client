@@ -5,7 +5,7 @@ const useAdmin = () => {
   const { auth } = useAuth();
   const { project } = useProject();
 
-  return project._id === auth._id;
+  return project.createdby === auth._id;
 };
 
 export default useAdmin;

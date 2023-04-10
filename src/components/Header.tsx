@@ -1,13 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useProject } from '../hooks';
+import { useAuth, useProject } from '../hooks';
 import SearchBar from './SearchBar';
 
 const Header = () => {
-  const { handleSearchBar } = useProject();
+  const { handleSearchBar, resetProjectProviderStates } = useProject();
+  const { resetAuthProviderStates } = useAuth();
   const navigate = useNavigate();
-  const LogOut = () => {
+  const handleLogOut = () => {
+    resetProjectProviderStates();
+    resetAuthProviderStates();
     localStorage.removeItem('token');
-    navigate('/');
+    // navigate('/');
   };
 
   return (
@@ -38,7 +41,7 @@ const Header = () => {
           <button
             type='button'
             className='text-white text-sm bg-sky-600 p-3 rounded-md uppercase font-bold'
-            onClick={LogOut}
+            onClick={handleLogOut}
           >
             Logout
           </button>

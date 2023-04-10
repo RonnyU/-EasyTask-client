@@ -1,3 +1,5 @@
+import { TaskWithProjectType } from '../types/types';
+
 export interface IUser {
   _id: string;
   name: string;
@@ -25,4 +27,25 @@ export interface ITask {
   deadline: string;
   project?: string;
   completed?: Pick<IUser, 'name' | '_id'>;
+}
+
+export interface ITaskWithProject extends TaskWithProjectType {
+  project: IProject;
+}
+
+export interface ServerToClientEvents {
+  response: (person: any) => void;
+  taskAdded: (task: ITask) => void;
+  taskDeleted: (task: ITask) => void;
+  taskUpdated: (task: ITaskWithProject) => void;
+  taskCompleted: (task: ITaskWithProject) => void;
+  withAck: (d: string, callback: (e: number) => void) => void;
+}
+
+export interface ClientToServerEvents {
+  openProject: (id: string) => void;
+  newTask: (task: ITask) => void;
+  deleteTask: (task: ITask) => void;
+  updateTask: (task: ITaskWithProject) => void;
+  completeTask: (task: ITaskWithProject) => void;
 }
