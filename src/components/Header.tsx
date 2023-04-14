@@ -10,7 +10,6 @@ const Header = () => {
     resetProjectProviderStates();
     resetAuthProviderStates();
     localStorage.removeItem('token');
-    // navigate('/');
   };
 
   return (

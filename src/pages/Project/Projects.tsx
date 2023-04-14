@@ -3,7 +3,7 @@ import { useProject } from '../../hooks';
 import { useEffect } from 'react';
 
 const Projects = () => {
-  const { projects, getProjects, alert } = useProject();
+  const { projects, alert } = useProject();
 
   return (
     <>

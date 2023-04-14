@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { FormEvent, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Alert } from '../../components';
-import { useForm } from '../../hooks';
+import { useForm, useProject } from '../../hooks';
 import { AlertType, ServerError } from '../../types/types';
 import axiosClient from '../../utils/axiosClient';
 
@@ -17,7 +17,7 @@ const INITIAL_STATE: FormData = {
 const ResetPassword = () => {
   const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
 
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const { alert, showAlert } = useProject();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,7 +25,7 @@ const ResetPassword = () => {
     const { email } = form;
 
     if (!email || email.length < 6) {
-      setAlert({
+      showAlert({
         msg: 'Email is required',
         error: true,
       });
@@ -38,14 +38,14 @@ const ResetPassword = () => {
       });
 
       clearForm();
-      setAlert({
+      showAlert({
         msg: data.msg,
         error: false,
       });
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
-      setAlert({
+      showAlert({
         msg: errMsg.msg,
         error: true,
       });

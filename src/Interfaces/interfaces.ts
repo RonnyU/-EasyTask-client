@@ -49,3 +49,20 @@ export interface ClientToServerEvents {
   updateTask: (task: ITaskWithProject) => void;
   completeTask: (task: ITaskWithProject) => void;
 }
+
+export interface Label {
+  label_class: string;
+  label_for: string;
+}
+
+export interface Input {
+  input_type: string;
+  input_name: string;
+  input_class: string;
+  input_placeholder?: string;
+}
+
+export interface InputGroup extends Label, Input {
+  class: string;
+  InitForm: any;
+}

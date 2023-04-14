@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { FormEvent, useState } from 'react';
 import { AxiosError } from 'axios';
-import { AlertType, ServerError } from '../../types/types';
+import { ServerError } from '../../types/types';
 import axiosClient from '../../utils/axiosClient';
 import { Alert } from '../../components';
-import { useForm } from '../../hooks';
+import { useForm, useProject } from '../../hooks';
 
 interface FormData {
   name: string;
@@ -23,7 +23,7 @@ const INITIAL_STATE: FormData = {
 const SignUp = () => {
   const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
 
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const { alert, showAlert } = useProject();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,27 +31,30 @@ const SignUp = () => {
     const { name, email, password, repeatPassword } = form;
 
     if ([name, email, password, repeatPassword].includes('')) {
-      setAlert({
+      showAlert({
         msg: 'All fields are required',
         error: true,
       });
     }
 
     if (password !== repeatPassword) {
-      setAlert({
+      showAlert({
         msg: 'The passwords does not match',
         error: true,
       });
     }
 
     if (password !== undefined && password.length < 6) {
-      setAlert({
+      showAlert({
         msg: 'The password must have 6 characters at least',
         error: true,
       });
     }
 
-    setAlert(undefined);
+    showAlert({
+      msg: '',
+      error: false,
+    });
 
     try {
       const { data } = await axiosClient.post('/users', {
@@ -60,7 +63,7 @@ const SignUp = () => {
         password,
       });
 
-      setAlert({
+      showAlert({
         msg: data.msg,
         error: false,
       });
@@ -69,7 +72,7 @@ const SignUp = () => {
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
-      setAlert({
+      showAlert({
         msg: errMsg.msg,
         error: true,
       });

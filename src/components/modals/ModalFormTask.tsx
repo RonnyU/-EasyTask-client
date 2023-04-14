@@ -1,7 +1,7 @@
 import { Fragment, FormEvent, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useForm, useProject } from '../hooks';
-import Alert from './Alert';
+import { useForm, useProject } from '../../hooks';
+import Alert from '../Alert';
 
 interface FormData {
   name: string;

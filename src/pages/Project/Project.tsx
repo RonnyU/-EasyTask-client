@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useAdmin, useAuth, useProject } from '../../hooks';
+import { useAdmin, useProject } from '../../hooks';
 import {
   ModalFormTask,
   Task,
@@ -15,6 +15,7 @@ import {
   ITaskWithProject,
   ServerToClientEvents,
 } from '../../Interfaces/interfaces';
+import PacmanLoader from 'react-spinners/PacmanLoader';
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
 
@@ -32,8 +33,6 @@ const Project = () => {
     socketCompleteTask,
   } = useProject();
   const admin = useAdmin();
-
-  let x: ITaskWithProject;
 
   useEffect(() => {
     if (id) {
@@ -92,7 +91,7 @@ const Project = () => {
 
   const { name } = project;
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <PacmanLoader color='#36d7b7' />;
 
   return (
     <>

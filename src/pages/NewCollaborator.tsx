@@ -23,7 +23,6 @@ const NewCollaborator = () => {
     return () => showAlert({ msg: '', error: false });
   }, []);
 
-  //TODO add spinners
   if (!project?._id) return <Alert msg={alert.msg} error={alert.error} />;
 
   return (

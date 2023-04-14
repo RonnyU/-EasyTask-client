@@ -4,7 +4,7 @@ import axiosClient from '../../utils/axiosClient';
 import { AlertType, ServerError } from '../../types/types';
 import axios, { AxiosError } from 'axios';
 import { Alert } from '../../components';
-import { useForm } from '../../hooks';
+import { useForm, useProject } from '../../hooks';
 
 interface FormData {
   password: string;
@@ -21,7 +21,7 @@ const NewPassword = () => {
 
   const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
 
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const { alert, showAlert } = useProject();
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [passwordSaved, setPasswordSaved] = useState(false);
 
@@ -38,7 +38,7 @@ const NewPassword = () => {
       } catch (error) {
         const errMsg = (error as AxiosError).response?.data as ServerError;
 
-        setAlert({
+        showAlert({
           msg: errMsg?.msg,
           error: true,
         });
@@ -59,7 +59,7 @@ const NewPassword = () => {
     const { password } = form;
 
     if (password.length < 6) {
-      setAlert({
+      showAlert({
         msg: 'The password must have at least 6 characters',
         error: true,
       });
@@ -74,7 +74,7 @@ const NewPassword = () => {
       });
 
       setPasswordSaved(true);
-      setAlert({
+      showAlert({
         msg: data.msg,
         error: false,
       });
@@ -84,7 +84,7 @@ const NewPassword = () => {
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
-      setAlert({
+      showAlert({
         msg: errMsg?.msg,
         error: true,
       });

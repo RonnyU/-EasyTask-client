@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProjectForm } from '../../components';
 import { useProject } from '../../hooks';
+import PacmanLoader from 'react-spinners/PacmanLoader';
 
 const EditProject = () => {
   const params = useParams();
@@ -22,7 +23,7 @@ const EditProject = () => {
 
   const { name } = project;
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <PacmanLoader color='#36d7b7' />;
 
   return (
     <>

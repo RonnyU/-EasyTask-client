@@ -4,12 +4,13 @@ import axios, { AxiosError } from 'axios';
 import axiosClient from '../../utils/axiosClient';
 import { AlertType, ServerError } from '../../types/types';
 import { Alert } from '../../components';
+import { useProject } from '../../hooks';
 
 const ConfirmAccount = () => {
   const params = useParams();
   const { id } = params;
 
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const { alert, showAlert } = useProject();
   const [accountConfirmed, setAccountConfirmed] = useState(false);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ const ConfirmAccount = () => {
         const url = `/users/confirm/${id}`;
         const { data } = await axiosClient(url, { cancelToken: source.token });
 
-        setAlert({
+        showAlert({
           msg: data.msg,
           error: false,
         });
@@ -28,7 +29,7 @@ const ConfirmAccount = () => {
       } catch (error) {
         const errMsg = (error as AxiosError).response?.data as ServerError;
 
-        setAlert({
+        showAlert({
           msg: errMsg.msg,
           error: true,
         });

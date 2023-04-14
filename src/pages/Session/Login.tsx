@@ -3,7 +3,7 @@ import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosClient from '../../utils/axiosClient';
 import { Alert } from '../../components';
-import { useAuth, useForm } from '../../hooks';
+import { useAuth, useForm, useProject } from '../../hooks';
 import { AlertType, ServerError } from '../../types/types';
 
 interface FormData {
@@ -19,7 +19,7 @@ const INITIAL_STATE: FormData = {
 const Login = () => {
   const { form, register, clearForm } = useForm<FormData>(INITIAL_STATE);
 
-  const [alert, setAlert] = useState<AlertType | undefined>(undefined);
+  const { alert, showAlert } = useProject();
 
   const { setStateAuth } = useAuth();
 
@@ -32,13 +32,16 @@ const Login = () => {
     const { password } = form;
 
     if ([email, password].includes('')) {
-      setAlert({
+      showAlert({
         msg: 'All fields are required',
         error: true,
       });
     }
 
-    setAlert(undefined);
+    showAlert({
+      msg: '',
+      error: false,
+    });
 
     try {
       const { data } = await axiosClient.post('/users/login', {
@@ -54,7 +57,7 @@ const Login = () => {
     } catch (error) {
       const errMsg = (error as AxiosError).response?.data as ServerError;
 
-      setAlert({
+      showAlert({
         msg: errMsg.msg,
         error: true,
       });

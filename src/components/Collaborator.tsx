@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { PropsCollaborator } from '../types/types';
 
 const Collaborator = ({ collaborator }: PropsCollaborator) => {
-  const { handleDeleteCollaborator, showAlert } = useProject();
+  const { handleDeleteCollaborator } = useProject();
   const { name, email } = collaborator;
 
   return (
